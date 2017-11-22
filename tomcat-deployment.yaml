@@ -19,7 +19,7 @@ spec:
         - name: log-storage
           mountPath: /usr/local/tomcat/logs/
       - name: fluent-bit
-        image: fluent/fluent-bit-kafka-dev:0.3
+        image: fluent/fluent-bit
         volumeMounts:
         - name: log-storage
           mountPath: /mnt/log/
