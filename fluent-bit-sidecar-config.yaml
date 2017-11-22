@@ -11,24 +11,30 @@ data:
   fluent-bit.conf: |
     [SERVICE]
         Flush         1
-        Log_Level     debug
+        Log_Level     info
         Daemon        off
         Parsers_File  parsers.conf
     @INCLUDE input-java.conf
+    @INCLUDE filter-stdout.conf
     @INCLUDE output-stdout.conf
   input-java.conf: |
     [INPUT]
         Name              tail
         Tag               tomcat
         Path              /mnt/log/*.log
-        Parser            java_multiline
+        Multiline        On
+        Parser_Firstline java_multiline
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
         Refresh_Interval  10
+  filter-stdout.conf: |
+    [FILTER]
+        Name           stdout
+        Match          tomcat
   output-stdout.conf: |
     [OUTPUT]
-        Name           stdout
+        Name           null
         Match           *
   parsers.conf: |
     [PARSER]
