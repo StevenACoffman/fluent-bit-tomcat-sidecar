@@ -1,0 +1,35 @@
+# depends on k8s-sequoia-sacct.yaml
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: tomcat9-alpine
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tomcat9-alpine
+    spec:
+      containers:
+      - name: tomcat9-alpine
+        image: tomcat:9.0.1-jre8-alpine
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: log-storage
+          mountPath: /usr/local/tomcat/logs/
+      - name: fluent-bit
+        image: fluent/fluent-bit-kafka-dev:0.3
+        volumeMounts:
+        - name: log-storage
+          mountPath: /mnt/log/
+          readOnly: true
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc/
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: log-storage
+        emptyDir: {}
+      - name: fluent-bit-config
+        configMap:
+          name: fluent-bit-sidecar-config

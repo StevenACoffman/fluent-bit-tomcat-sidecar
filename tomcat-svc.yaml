@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tomcat9-alpine
+  name: tomcat9-alpine
+  annotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: http
+  selector:
+    app: tomcat9-alpine
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
